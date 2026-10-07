@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FlowBrake VisualLab</title><link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+  <div class="brand"><div class="brandmark">FB</div><div><b>FlowBrake</b><span>VisualLab</span></div></div>
+  <nav><a class="active" href="#overview">Overview</a><a href="#transfer">File Transfer</a><a href="#telemetry">Telemetry</a><a href="#flow">Architecture</a><a href="#experiments">Experiments</a></nav>
+  <div class="side-note"><span class="pulse"></span><div><b>Local session</b><small>Simulation engine ready</small></div></div>
+  <div class="version">FLOWBRAKE / 1.0</div>
+</aside>
+<main class="content">
+<header class="topbar"><div><div class="crumb">FLOW CONTROL / VISUALLAB</div><h1>Receiver-driven flow control</h1><p>Observe how receiver capacity shapes sender transmission in real time.</p></div><div class="runstate"><span></span><b id="runState">RUNNING</b><small id="tick">TICK 0</small></div></header>
+
+<section id="overview" class="hero panel"><div><span class="tag">LIVE EXPERIMENT</span><h2>When the receiver says <em>slow down</em>, the sender listens.</h2><p>FlowBrake models an advertised receive window and an adaptive brake that responds to buffer pressure. Change the network conditions and watch the protocol react.</p></div><div class="hero-mini"><span>Current window</span><strong id="heroWindow">—</strong><small>receiver → sender</small></div></section>
+
+
+<section id="transfer" class="panel transfer-panel">
+  <div class="panelhead">
+    <div><span class="eyebrow">FILE TRANSFER</span><h3>Sender → Receiver</h3></div>
+    <span id="uploadStatus" class="transfer-status">READY</span>
+  </div>
+
+  <div class="upload-grid">
+    <div class="upload-box" id="dropZone">
+      <input id="fileInput" type="file" hidden>
+      <div class="upload-icon">↑</div>
+      <strong>Choose a file to send</strong>
+      <span>TXT, PDF, JPG, PNG, MP3, MP4, ZIP and other file types</span>
+      <button id="chooseFile" type="button" class="upload-button">Choose File</button>
+      <small id="selectedFile">No file selected</small>
+    </div>
+
+    <div class="transfer-info">
+      <div class="file-row"><span>FILE</span><b id="fileName">—</b></div>
+      <div class="file-row"><span>SIZE</span><b id="fileSize">—</b></div>
+      <div class="file-row"><span>TRANSFERRED</span><b id="fileTransferred">0 B</b></div>
+      <div class="file-row"><span>PACKETS</span><b id="packetInfo">—</b></div>
+      <div class="file-meter"><i id="fileProgress"></i></div>
+      <div class="transfer-percent"><span>Receiver progress</span><b id="filePercent">0%</b></div>
+      <div class="transfer-actions">
+        <button id="uploadBtn" class="primary" type="button" disabled>Upload & Start Transfer</button>
+        <a id="downloadBtn" class="download-button" href="#" hidden>Download Received File</a>
+      </div>
+      <p class="transfer-note">The uploaded file is stored locally by Flask. The simulator then visualizes the file moving through the receiver-controlled window.</p>
+    </div>
+  </div>
+</section>
+
+<section class="metrics" id="telemetry">
+ <div class="metric panel"><span>BUFFER</span><strong><b id="used">—</b><small>/ <i id="capacity">—</i></small></strong><div class="meter"><i id="bar"></i></div><p id="util">0% utilized</p></div>
+ <div class="metric panel"><span>ADVERTISED WINDOW</span><strong id="window">—</strong><p>available sender allowance</p></div>
+ <div class="metric panel"><span>BRAKE STATE</span><strong id="brake">WAITING</strong><p id="brakeText">Receiver has sufficient space.</p></div>
+ <div class="metric panel"><span>LIMITED DATA</span><strong id="dropped">—</strong><p>units held back by control</p></div>
+</section>
+
+<section class="workspace">
+ <div class="panel chart"><div class="panelhead"><div><span class="eyebrow">TELEMETRY</span><h3>Buffer pressure</h3></div><div class="legend"><i></i> buffer <i></i> window</div></div><canvas id="chart" width="900" height="330"></canvas></div>
+ <div class="panel controls"><div class="panelhead"><div><span class="eyebrow">EXPERIMENT</span><h3>Run controls</h3></div><span class="livebadge">● LIVE</span></div>
+  <label>Sender rate <b id="sendVal">25</b><input id="sendRate" type="range" min="1" max="80" value="25"></label>
+  <label>Receiver drain <b id="drainVal">12</b><input id="drainRate" type="range" min="0" max="60" value="12"></label>
+  <label>Buffer capacity <b id="bufferVal">100</b><input id="bufferCap" type="range" min="20" max="200" value="100"></label>
+  <div class="preset"><span>PRESETS</span><button data-s="20" data-d="20">Baseline</button><button data-s="60" data-d="10">Pressure</button><button data-s="60" data-d="40">Recovery</button></div>
+  <div class="actions"><button id="toggle" class="primary">Pause</button><button id="reset">Reset</button><label class="check"><input id="adaptive" type="checkbox" checked> Adaptive brake</label></div>
+ </div>
+</section>
+
+<section class="panel timeline"><div class="panelhead"><div><span class="eyebrow">EVENT STREAM</span><h3>Receiver feedback timeline</h3></div><small>latest protocol events</small></div><div id="events" class="events"></div></section>
+
+<section id="flow" class="panel architecture"><div class="panelhead"><div><span class="eyebrow">PROTOCOL VIEW</span><h3>Flow architecture</h3></div></div><div class="flowrow"><div class="endpoint"><span>S</span><b>Sender</b><small>data source</small><strong id="senderRateCard">—</strong></div><div class="wire"><i>DATA</i><span>bounded by window</span></div><div class="endpoint receiver"><span>R</span><b>Receiver</b><small>buffer + application</small><strong id="receiverWindowCard">WINDOW —</strong></div><div class="wire reverse"><i>WINDOW</i><span>feedback</span></div><div class="endpoint brake"><span>↘</span><b>FlowBrake</b><small>adaptive policy</small><strong id="brakeCard">WAITING</strong></div></div></section>
+
+<section id="experiments" class="panel explanation"><div><span class="eyebrow">MODEL</span><h3>What is being measured?</h3></div><div class="cols"><p><b>Receiver window.</b> Free receiver capacity becomes the sender's transmission allowance. The adaptive policy tightens this allowance as utilization rises.</p><p><b>Pressure response.</b> The timeline exposes every simulation tick, making it easy to explain why the window shrinks or recovers.</p><p><b>Scope.</b> This is an educational transport-layer simulation—not a replacement for TCP and not a real packet sniffer.</p></div></section>
+<footer>FlowBrake VisualLab · local-first experiment environment</footer>
+</main></div>
+<script src="/static/app.js"></script>
+</body></html>
