@@ -2,7 +2,7 @@
 
 ## 1. Project idea
 
-FlowBrake VisualLab follows a local-first experiment-lab approach: the browser provides control and observability while the simulation engine models receiver-driven flow control.
+FlowBrake follows a local-first experiment-lab approach: the browser provides control and observability while the simulation engine models receiver-driven flow control.
 
 **FlowBrake** is an educational Computer Networks mini-project that demonstrates receiver-driven flow control.
 
