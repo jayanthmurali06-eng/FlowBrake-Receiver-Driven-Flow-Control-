@@ -2,7 +2,7 @@
 
 ## 1. Project idea
 
-FlowBrake follows a local-first experiment-lab approach: the browser provides control and observability while the simulation engine models receiver-driven flow control.
+FlowBrake VisualLab follows a local-first experiment-lab approach: the browser provides control and observability while the simulation engine models receiver-driven flow control.
 
 **FlowBrake** is an educational Computer Networks mini-project that demonstrates receiver-driven flow control.
 
@@ -43,7 +43,7 @@ At every simulation tick:
    - utilization < 50% → 100% of free space
    - 50–75% → 65% of free space
    - 75–90% → 35% of free space
-   - 90% → 15% of free space
+   - >90% → 15% of free space
 5. Sender transmits at most the advertised window.
 6. Receiver accepts the allowed data.
 7. Receiver drains data at its processing rate.
