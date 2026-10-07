@@ -43,7 +43,7 @@ At every simulation tick:
    - utilization < 50% → 100% of free space
    - 50–75% → 65% of free space
    - 75–90% → 35% of free space
-   - >90% → 15% of free space
+   - 90% → 15% of free space
 5. Sender transmits at most the advertised window.
 6. Receiver accepts the allowed data.
 7. Receiver drains data at its processing rate.
